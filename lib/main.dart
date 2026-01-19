@@ -35,16 +35,19 @@ class SocialMeidaApp extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return BlocProvider(
-            create: (context) => AuthCubit()..getUserData(),
+            create: (context) => AuthCubit()..checkAuthStatus(),
             child: BlocBuilder<AuthCubit, AuthState>(
-              buildWhen: (previous, current) => current is AuthSuccess,
               builder: (context, state) {
+                // تحقق من الـ auth state الحالي
+                final isAuthenticated =
+                    Supabase.instance.client.auth.currentUser != null;
+
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'Social Media App',
                   theme: AppThemes.lightTheme,
                   onGenerateRoute: AppRouter.onGenerateRoute,
-                  initialRoute: state is AuthSuccess
+                  initialRoute: isAuthenticated
                       ? AppRoutes.home
                       : AppRoutes.login,
                   locale: DevicePreview.locale(context),

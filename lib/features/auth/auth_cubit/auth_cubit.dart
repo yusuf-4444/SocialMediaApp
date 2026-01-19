@@ -7,6 +7,20 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
   final AuthServicesImpl authServices = AuthServicesImpl();
 
+  // ✅ Method جديدة للتحقق من الـ auth status
+  void checkAuthStatus() {
+    try {
+      final user = authServices.fetchCurrentUser();
+      if (user != null) {
+        emit(AuthSuccess());
+      } else {
+        emit(AuthInitial());
+      }
+    } catch (e) {
+      emit(AuthInitial());
+    }
+  }
+
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     try {
       emit(AuthLoading());
@@ -27,6 +41,7 @@ class AuthCubit extends Cubit<AuthState> {
       await authServices.registerWithEmailAndPassword(email, password, name);
       emit(AuthSuccess());
     } catch (e) {
+      print(e);
       emit(AuthFailure(message: e.toString()));
     }
   }
@@ -35,7 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthLoading());
       await authServices.logout();
-      emit(AuthSuccess());
+      emit(AuthLogout());
     } catch (e) {
       emit(AuthFailure(message: e.toString()));
     }
@@ -43,8 +58,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   void getUserData() {
     try {
-      authServices.fetchCurrentUser();
-      emit(AuthSuccess());
+      final user = authServices.fetchCurrentUser();
+      if (user != null) {
+        emit(AuthSuccess());
+      } else {
+        emit(AuthFailure(message: 'No user found'));
+      }
     } catch (e) {
       emit(AuthFailure(message: e.toString()));
     }

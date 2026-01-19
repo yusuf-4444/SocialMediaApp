@@ -4,6 +4,7 @@ import 'package:social_media_app/features/home/models/post_body_request.dart';
 import 'package:social_media_app/features/home/models/posts_model.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 import 'package:social_media_app/features/home/services/home_services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'home_state.dart';
 
@@ -54,19 +55,37 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> createPost(String text, String imageUrl) async {
     try {
       emit(PostCreating());
-      final user = authServices.fetchCurrentUser();
+
+      // احصل على الـ user مباشرة من Supabase
+      final user = Supabase.instance.client.auth.currentUser;
+
+      print('🔍 Checking user in createPost...');
+      print('👤 User ID: ${user?.id}');
+      print('📧 User Email: ${user?.email}');
+
       if (user == null) {
-        throw Exception('User not found');
+        print('❌ No user found!');
+        emit(PostCreatedError('You must be logged in to create a post'));
+        return;
       }
+
+      print('✅ User found, creating post...');
+
       final post = PostBodyRequest(
         userId: user.id,
         text: text,
         imageUrl: imageUrl,
       );
+
       await _db.createPost(post);
+      print('✅ Post created successfully!');
+
       emit(PostCreated());
+
+      // حدّث الـ posts
+      await fetchPosts();
     } catch (e) {
-      print(e);
+      print('❌ Error creating post: $e');
       emit(PostCreatedError(e.toString()));
     }
   }

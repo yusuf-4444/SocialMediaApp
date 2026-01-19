@@ -24,11 +24,11 @@ class UserDataModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'user_name': userName,
+      'username': userName,
       'email': email,
       'image_url': imageUrl,
       'title': title,
-      'created_at': createdAt.millisecondsSinceEpoch,
+      'created_at': createdAt.toString(),
     };
   }
 
@@ -36,7 +36,7 @@ class UserDataModel {
     return UserDataModel(
       id: map['id'] as String,
       name: map['name'] as String,
-      userName: map['user_name'] != null ? map['user_name'] as String : null,
+      userName: map['username'] != null ? map['username'] as String : null,
       email: map['email'] as String,
       imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
