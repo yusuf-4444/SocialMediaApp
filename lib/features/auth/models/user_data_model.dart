@@ -40,7 +40,9 @@ class UserDataModel {
       email: map['email'] as String,
       imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      createdAt: map['created_at'] is String
+          ? DateTime.parse(map['created_at'] as String)
+          : DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/features/auth/models/user_data_model.dart';
+import 'package:social_media_app/features/home/models/posts_model.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -7,6 +8,7 @@ abstract class HomeServices {
   Future<List<StoryModel>> fetchStories();
   Future<UserDataModel?> getUserData();
   Future<UserDataModel> getUsersData(String userId);
+  Future<List<PostsModel>> fetchPosts();
 }
 
 class HomeServicesImpl implements HomeServices {
@@ -53,6 +55,19 @@ class HomeServicesImpl implements HomeServices {
       );
     } catch (e) {
       throw Exception('Get user data failed: $e');
+    }
+  }
+
+  @override
+  Future<List<PostsModel>> fetchPosts() async {
+    try {
+      return await _db.fetchRows(
+        table: 'posts',
+        builder: (data, id) => PostsModel.fromMap(data),
+        primaryKey: 'id',
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 }
