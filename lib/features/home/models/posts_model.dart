@@ -4,20 +4,22 @@ import 'dart:convert';
 class PostsModel {
   final String id;
   final String createdAt;
-  final String? imageUrl;
+  final String? imagePost;
   final String authorId;
   final String? text;
   final List<String>? likes;
-  final String name;
+  final String? name;
+  final String? userImage;
 
   PostsModel({
     required this.id,
     required this.createdAt,
-    this.imageUrl,
+    this.imagePost,
     required this.authorId,
     this.text,
     this.likes = const [],
-    required this.name,
+    this.name = "",
+    this.userImage,
   });
 
   PostsModel copyWith({
@@ -28,15 +30,17 @@ class PostsModel {
     String? text,
     List<String>? likes,
     String? name,
+    String? userImage,
   }) {
     return PostsModel(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imagePost: imagePost ?? imagePost,
       authorId: authorId ?? this.authorId,
       text: text ?? this.text,
       likes: likes ?? this.likes,
       name: name ?? this.name,
+      userImage: userImage ?? this.userImage,
     );
   }
 
@@ -44,7 +48,7 @@ class PostsModel {
     return <String, dynamic>{
       'id': id,
       'createdAt': createdAt,
-      'imageUrl': imageUrl,
+      'imageUrl': imagePost,
       'authorId': authorId,
       'text': text,
       'likes': likes,
@@ -53,12 +57,11 @@ class PostsModel {
 
   factory PostsModel.fromMap(Map<String, dynamic> map) {
     return PostsModel(
-      name: map['name'] as String,
       id: map['id'] as String,
-      createdAt: map['createdAt'] as String,
-      imageUrl: map['imageUrl'] != null ? map['imageUrl'] as String : null,
-      authorId: map['authorId'] as String,
-      text: map['text'] != null ? map['text'] as String : null,
+      createdAt: map['created_at'] as String,
+      imagePost: map['image_post'] != null ? map['image_post'] as String : null,
+      authorId: map['author_id'] as String,
+      text: map['text_post'] != null ? map['text_post'] as String : null,
       likes: map['likes'] != null
           ? List<String>.from((map['likes'] as List<String>))
           : null,

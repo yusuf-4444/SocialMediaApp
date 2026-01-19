@@ -27,3 +27,12 @@ final class PostsError extends HomeState {
   final String message;
   PostsError(this.message);
 }
+
+final class PostCreating extends HomeState {}
+
+final class PostCreated extends HomeState {}
+
+final class PostCreatedError extends HomeState {
+  final String message;
+  PostCreatedError(this.message);
+}

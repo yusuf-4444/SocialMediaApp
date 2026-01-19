@@ -1,5 +1,6 @@
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/features/auth/models/user_data_model.dart';
+import 'package:social_media_app/features/home/models/post_body_request.dart';
 import 'package:social_media_app/features/home/models/posts_model.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -9,6 +10,7 @@ abstract class HomeServices {
   Future<UserDataModel?> getUserData();
   Future<UserDataModel> getUsersData(String userId);
   Future<List<PostsModel>> fetchPosts();
+  Future<void> createPost(PostBodyRequest post);
 }
 
 class HomeServicesImpl implements HomeServices {
@@ -66,6 +68,15 @@ class HomeServicesImpl implements HomeServices {
         builder: (data, id) => PostsModel.fromMap(data),
         primaryKey: 'id',
       );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> createPost(PostBodyRequest post) async {
+    try {
+      return await _db.insertRow(table: 'posts', values: post.toMap());
     } catch (e) {
       rethrow;
     }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media_app/core/router/app_routes.dart';
 import 'package:social_media_app/core/utils/app_colors.dart';
 import 'package:social_media_app/core/utils/assets.dart';
+import 'package:social_media_app/features/home/home_cubit/home_cubit.dart';
 
 class CustomPostCard extends StatelessWidget {
   const CustomPostCard({super.key});
@@ -12,7 +14,13 @@ class CustomPostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppRoutes.post);
+        Navigator.pushNamed(context, AppRoutes.post, arguments: true).then((
+          value,
+        ) {
+          if (value == true) {
+            BlocProvider.of<HomeCubit>(context).fetchPosts();
+          }
+        });
       },
       child: Container(
         width: double.infinity,
