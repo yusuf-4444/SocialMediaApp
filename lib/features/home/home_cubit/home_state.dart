@@ -2,37 +2,74 @@ part of 'home_cubit.dart';
 
 class HomeState {}
 
-final class HomeInitial extends HomeState {}
+class HomeInitial extends HomeState {}
 
-final class StoriesLoading extends HomeState {}
+// Stories States
+class StoriesLoading extends HomeState {}
 
-final class StoriesLoaded extends HomeState {
+class StoriesLoaded extends HomeState {
   final List<StoryModel> stories;
   StoriesLoaded(this.stories);
 }
 
-final class StoriesError extends HomeState {
+class StoriesError extends HomeState {
   final String message;
   StoriesError(this.message);
 }
 
-final class PostsLoading extends HomeState {}
+// Posts States
+class PostsLoading extends HomeState {}
 
-final class PostsLoaded extends HomeState {
+class PostsLoaded extends HomeState {
   final List<PostsModel> posts;
   PostsLoaded(this.posts);
 }
 
-final class PostsError extends HomeState {
+class PostsError extends HomeState {
   final String message;
   PostsError(this.message);
 }
 
-final class PostCreating extends HomeState {}
+// User States
+class FetchingUserData extends HomeState {}
 
-final class PostCreated extends HomeState {}
+class UserFetched extends HomeState {
+  final UserDataModel user;
+  UserFetched(this.user);
+}
 
-final class PostCreatedError extends HomeState {
+class UserFetchedError extends HomeState {
+  final String message;
+  UserFetchedError(this.message);
+}
+
+// Media Picking States
+class ImagePicked extends HomeState {
+  final String imagePath;
+  ImagePicked(this.imagePath);
+}
+
+class VideoPicked extends HomeState {
+  final String videoPath;
+  VideoPicked(this.videoPath);
+}
+
+class ImagePickingError extends HomeState {
+  final String message;
+  ImagePickingError(this.message);
+}
+
+class VideoPickingError extends HomeState {
+  final String message;
+  VideoPickingError(this.message);
+}
+
+// Create Post States
+class PostCreating extends HomeState {}
+
+class PostCreated extends HomeState {}
+
+class PostCreatedError extends HomeState {
   final String message;
   PostCreatedError(this.message);
 }

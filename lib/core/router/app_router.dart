@@ -14,11 +14,18 @@ class AppRouter {
       case AppRoutes.home:
         return CupertinoPageRoute(builder: (_) => const CustomNavBar());
       case AppRoutes.post:
+        final homeCubit = settings.arguments as HomeCubit?;
+
         return CupertinoPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => HomeCubit(),
-            child: const CreatePostPage(),
-          ),
+          builder: (_) => homeCubit != null
+              ? BlocProvider.value(
+                  value: homeCubit,
+                  child: const CreatePostPage(),
+                )
+              : BlocProvider(
+                  create: (context) => HomeCubit()..fetchUserData(),
+                  child: const CreatePostPage(),
+                ),
         );
       default:
         return CupertinoPageRoute(builder: (_) => const AuthPage());

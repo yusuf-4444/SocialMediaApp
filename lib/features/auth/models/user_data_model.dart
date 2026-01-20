@@ -19,27 +19,33 @@ class UserDataModel {
     this.title,
     required this.createdAt,
   });
-
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    final map = <String, dynamic>{
       'id': id,
       'name': name,
-      'username': userName,
       'email': email,
-      'image_url': imageUrl,
-      'title': title,
-      'created_at': createdAt.toString(),
+      'created_at': createdAt.toIso8601String(),
     };
+
+    // أضف القيم الاختيارية فقط لو موجودة
+    if (userName != null) map['username'] = userName;
+    if (imageUrl != null) map['image_url'] = imageUrl;
+    if (title != null) map['title'] = title;
+
+    print('📊 toMap() result: $map');
+    return map;
   }
 
   factory UserDataModel.fromMap(Map<String, dynamic> map) {
+    print('📥 fromMap() input: $map');
+
     return UserDataModel(
       id: map['id'] as String,
       name: map['name'] as String,
-      userName: map['username'] != null ? map['username'] as String : null,
+      userName: map['username'] as String?,
       email: map['email'] as String,
-      imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
-      title: map['title'] != null ? map['title'] as String : null,
+      imageUrl: map['image_url'] as String?,
+      title: map['title'] as String?,
       createdAt: map['created_at'] is String
           ? DateTime.parse(map['created_at'] as String)
           : DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),

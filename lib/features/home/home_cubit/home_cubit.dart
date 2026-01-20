@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/services/upload_files_services.dart';
+import 'package:social_media_app/features/auth/models/user_data_model.dart';
 import 'package:social_media_app/features/auth/services/auth_services.dart';
 import 'package:social_media_app/features/home/models/post_body_request.dart';
 import 'package:social_media_app/features/home/models/posts_model.dart';
@@ -12,6 +16,9 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
   final HomeServicesImpl _db = HomeServicesImpl();
   final AuthServicesImpl authServices = AuthServicesImpl();
+  final UploadFilesServicesImpl _uploadServices = UploadFilesServicesImpl();
+  File? pickedImage;
+  File? pickedVideo;
 
   Future<void> fetchStories() async {
     emit(StoriesLoading());
@@ -56,7 +63,6 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       emit(PostCreating());
 
-      // احصل على الـ user مباشرة من Supabase
       final user = Supabase.instance.client.auth.currentUser;
 
       print('🔍 Checking user in createPost...');
@@ -82,11 +88,52 @@ class HomeCubit extends Cubit<HomeState> {
 
       emit(PostCreated());
 
-      // حدّث الـ posts
       await fetchPosts();
     } catch (e) {
       print('❌ Error creating post: $e');
       emit(PostCreatedError(e.toString()));
+    }
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      final user = await _db.getUserData();
+
+      if (user != null) {
+        emit(UserFetched(user));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> pickImageFromGallery() async {
+    final image = await _uploadServices.uploadImageFromGallery();
+    if (image == null) {
+      emit(ImagePickingError('No image picked'));
+    } else {
+      pickedImage = File(image.path);
+      emit(ImagePicked(pickedImage!.path));
+    }
+  }
+
+  Future<void> pickVideoFromGallery() async {
+    final video = await _uploadServices.uploadVideoFromGallery();
+    if (video == null) {
+      emit(VideoPickingError('No video picked'));
+    } else {
+      pickedVideo = File(video.path);
+      emit(VideoPicked(pickedVideo!.path));
+    }
+  }
+
+  Future<void> pickImageFromCamera() async {
+    final image = await _uploadServices.uploadImageFromCamera();
+    if (image == null) {
+      emit(ImagePickingError('No image picked'));
+    } else {
+      pickedImage = File(image.path);
+      emit(ImagePicked(pickedImage!.path));
     }
   }
 }

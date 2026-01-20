@@ -14,13 +14,14 @@ class CustomPostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppRoutes.post, arguments: true).then((
-          value,
-        ) {
-          if (value == true) {
-            BlocProvider.of<HomeCubit>(context).fetchPosts();
-          }
-        });
+        final homeCubit = BlocProvider.of<HomeCubit>(context);
+        Navigator.pushNamed(context, AppRoutes.post, arguments: homeCubit).then(
+          (value) {
+            if (value == true) {
+              homeCubit.fetchPosts();
+            }
+          },
+        );
       },
       child: Container(
         width: double.infinity,
